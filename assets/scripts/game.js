@@ -18,6 +18,7 @@ cc.Class({
             default:[],
         },
         enabledT:true,//доступность хода (блокировка нажатий на время выполнения удаления блоков)
+        arrToDel:[],//массив для удаления боксов
         // foo: {
         //     // ATTRIBUTES:
         //     default: null,        // The default value will be used only when the component attaching
@@ -102,26 +103,128 @@ cc.Class({
         }        
     },
 
-    find_box_to_blast(i,j,iF,jF){//поиск блоков для удаления
+    checkToDel(i,j){
+        console.log(i,j,this.arrToDel);
+        for(var k=0;k<this.arrToDel.length;k++)
+        {
+            if((this.arrToDel[k].i==i)&&(this.arrToDel[k].j==j)){
+                return 1;
+            }
+        }
+        return 0;
+    },
+
+    find_box_to_blast(i,j,iF,jF,count){//поиск блоков для удаления
+        var selfy=this;
+        var conf=selfy.node.parent.getComponent("config");
+
+        //this.enabledT=false;//заблокировали на время проверки - надо ставить перед вызовом функции
+        count++;//порядковый номер итерации. Можно оставить. можно удалить (не забыть удалить в вызовах функций)    
+        if(count>conf.boxHeight*conf.boxWidth){console.log("recurtion");return 0;}
+        //console.log("итерация ",count, "координаты ",i,j,"координаты предыдущего", iF,jF);
+
+        var currBox=this.arrBox[i][j];
+
+        //if((i==iF)&&(j==jF)){return 0;}//не изначальный ли это блок?        
+        if(this.checkToDel(i,j)){return 0;}
+        selfy.arrToDel.push({i,j});
+
+        if((i-1)>=0){//проверка границ
+            if((selfy.arrBox[i-1][j].colorBox==currBox.colorBox)&&(((i-1)!=iF)||(j!=jF))){//если у элемента слева совпадает цвет И новые координаты не равны предыдущему- вызываем функцию для проверки повторно
+                //console.log("итерация ",count, "координаты ",i,j, "идем в блок слева");
+                this.find_box_to_blast(i-1,j,i,j,count); 
+                //console.log("итерация ",count, "координаты ",i,j, "вернулись из блока слева");
+                }
+            }
+    
+        if((i+1)<conf.countWidth){
+            if((selfy.arrBox[i+1][j].colorBox==currBox.colorBox)&&(((i+1)!=iF)||(j!=jF)))//если у элемента справа совпадает цвет И новые координаты не равны предыдущему- вызываем функцию для проверки повторно
+            { 
+                //console.log("итерация ",count, "координаты ",i,j, "идем в блок справа");
+                this.find_box_to_blast(i+1,j,i,j,count); 
+                //console.log("итерация ",count, "координаты ",i,j, "вернулись из блока справа");
+            }
+        }
+    
+        if((j-1)>=0){
+            if((selfy.arrBox[i][j-1].colorBox==currBox.colorBox)&&(((i)!=iF)||((j-1)!=jF)))
+            { //если у элемента снизу совпадает цвет И новые координаты не равны предыдущему- вызываем функцию для проверки повторно
+                //console.log("итерация ",count, "координаты ",i,j, "идем в блок снизу");
+                this.find_box_to_blast(i,j-1,i,j,count); 
+                //console.log("итерация ",count, "координаты ",i,j, "вернулись из блока снизу");
+            }
+        }
+    
+        if((j+1)<conf.countHeight){
+            if((selfy.arrBox[i][j+1].colorBox==currBox.colorBox)&&(((i)!=iF)||((j+1)!=jF)))
+            {//если у элемента сверху совпадает цвет И новые координаты не равны предыдущему- вызываем функцию для проверки повторно
+                //console.log("итерация ",count, "координаты ",i,j, "идем в блок сверху"); 
+                this.find_box_to_blast(i,j+1,i,j,count);
+                //console.log("итерация ",count, "координаты ",i,j, "вернулись из блока сверху"); 
+                }
+            }
+
+        //console.log("массив на удаление:", selfy.arrToDel);
+        return (selfy.arrToDel);
+    },
+
+    first_find_box_to_blast(i,j){//поиск блоков для удаления
         var selfy=this;
         var conf=selfy.node.parent.getComponent("config");
         //this.enabledT=false;//заблокировали на время проверки - надо ставить перед вызовом функции
-        var arrToDel = [this.arrBox[i][j]];
-        console.log(selfy,conf,arrToDel,i,j);
-        if((i==iF)&&(j==jF)){return 0;}//не изначальный ли это блок?
+        //console.log("итерация ",0, "координаты ",i,j);
 
-        if((i-1)>=0){if(selfy.arrBox[i-1][j].colorBox==selfy.arrBox[iF][jF].colorBox){ arrToDel.push(this.find_box_to_blast(i-1,j,iF,jF)); }}//если у элемента слева совпадает цвет - вызываем функцию для проверки повторно
-    
-        if((i+1)<conf.countWidth){if(selfy.arrBox[i+1][j].colorBox==selfy.arrBox[iF][jF].colorBox){ arrToDel.push(this.find_box_to_blast(i+1,j,iF,jF)); }}//если у элемента справа совпадает цвет - вызываем функцию для проверки повторно
-    
-        if((j-1)>=0){if(selfy.arrBox[i][j-1].colorBox==selfy.arrBox[iF][jF].colorBox){ arrToDel.push(this.find_box_to_blast(i,j-1,iF,jF)); }}//если у элемента слева совпадает цвет - вызываем функцию для проверки повторно
-    
-        if((j+1)<conf.countHeight){if(selfy.arrBox[i][j+1].colorBox==selfy.arrBox[iF][jF].colorBox){ arrToDel.push(this.find_box_to_blast(i,j+1,iF,jF)); }}//если у элемента слева совпадает цвет - вызываем функцию для проверки повторно
+        selfy.arrToDel = [{i,j}];  
 
-        console.log(arrToDel);
-        return (arrToDel);
+        if((i-1)>=0){//проверка границ
+            if(selfy.arrBox[i-1][j].colorBox==selfy.arrBox[i][j].colorBox){
+                //console.log("итерация ",0, "координаты ",i,j, "идем в блок слева");
+                this.find_box_to_blast(i-1,j,i,j,0); 
+                //console.log("итерация ",0, "координаты ",i,j, "вернулись из блока сверху"); 
+
+            }
+        }//если у элемента слева совпадает цвет - вызываем функцию для проверки повторно
+    
+        if((i+1)<conf.countWidth){//проверка границ
+            if(selfy.arrBox[i+1][j].colorBox==selfy.arrBox[i][j].colorBox){
+                //console.log("итерация ",0, "координаты ",i,j, "идем в блок справа");
+                this.find_box_to_blast(i+1,j,i,j,0); 
+                //console.log("итерация ",0, "координаты ",i,j, "вернулись из блока справа"); 
+            }
+        }//если у элемента справа совпадает цвет - вызываем функцию для проверки повторно
+    
+        if((j-1)>=0){
+            if(selfy.arrBox[i][j-1].colorBox==selfy.arrBox[i][j].colorBox){ 
+                //console.log("итерация ",0, "координаты ",i,j, "идем в блок снизу");
+                this.find_box_to_blast(i,j-1,i,j,0); 
+                //console.log("итерация ",0, "координаты ",i,j, "вернулись из блока снизу"); 
+            }
+        }//если у элемента снизу совпадает цвет - вызываем функцию для проверки повторно
+    
+        if((j+1)<conf.countHeight){//проверка границ
+            if(selfy.arrBox[i][j+1].colorBox==selfy.arrBox[i][j].colorBox){ 
+                //console.log("итерация ",0, "координаты ",i,j, "идем в блок сверху");
+                this.find_box_to_blast(i,j+1,i,j,0); 
+                //console.log("итерация ",0, "координаты ",i,j, "вернулись из блока сверху"); 
+            }
+        }//если у элемента сверху совпадает цвет - вызываем функцию для проверки повторно
+
+        console.log("массив на удаление:", selfy.arrToDel);
+        if(selfy.arrToDel.length<=conf.minCountToBlast-1){return 0;}
+        else{return (selfy.arrToDel);}
     },
 
+    makeBlast(x,y){
+        var selfy=this;
+        var conf=selfy.node.parent.getComponent("config");
+        for(var i=0;i<selfy.arrToDel.length;i++){
+            var m=selfy.arrToDel[i].i;
+            var n=selfy.arrToDel[i].j;
+            conf.ScoreCount+=selfy.arrBox[m][n].score_points;
+            selfy.arrBox[m][n].destroy();
+            this.createNewBox(m,n);
+        }
+    },
     // LIFE-CYCLE CALLBACKS:    
     onLoad () {
         var selfy=this;

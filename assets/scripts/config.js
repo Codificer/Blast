@@ -15,6 +15,7 @@ var config = cc.Class({
         countTurns:{
             default:30,//количество ходов
         },
+        minCountToBlast:2,
         defaultTurns:30,
         ScoreCount:0,
         boxHeight:50,

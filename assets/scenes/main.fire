@@ -951,7 +951,8 @@
       "__uuid__": "eebeeb98-4072-4f79-9c2b-8526ad0690f6"
     },
     "arrBox": [],
-    "arrColors": null,
+    "enabledT": true,
+    "arrToDel": [],
     "_id": "faXRuL5dZJTJ/716ks1zU6"
   },
   {
@@ -1301,10 +1302,11 @@
       "__id__": 2
     },
     "_enabled": true,
-    "colorsCount": 5,
+    "colorsCount": 4,
     "countWidth": 9,
     "countHeight": 9,
     "countTurns": 30,
+    "minCountToBlast": 2,
     "defaultTurns": 30,
     "ScoreCount": 0,
     "boxHeight": 50,
