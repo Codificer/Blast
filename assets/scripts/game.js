@@ -17,6 +17,7 @@ cc.Class({
         arrBox:{
             default:[],
         },
+        isStart:false,
         enabledT:true,//доступность хода (блокировка нажатий на время выполнения удаления блоков)
         arrToDel:[],//массив для удаления боксов
         // foo: {
@@ -91,20 +92,21 @@ cc.Class({
         this.makeColorN(this.arrBox[i][j]);
         this.arrBox[i][j].height=conf.boxHeight;
         this.arrBox[i][j].width=conf.boxWidth;  
-        this.arrBox[i][j].getComponent("block").moveToLocation(this.arrBox[i][j].x,j*conf.boxHeight+conf.boxHeight/2+10);
-    },
+        },
 
 
     make_battle_arena_new(conf){//заполнение поля с нуля
+        var conf=this.node.parent.getComponent("config");
         for(var i=0;i<conf.countWidth;i++){
             for(var j=0;j<conf.countHeight;j++){
-                this.createNewBox(i,j);                
+                this.createNewBox(i,j);    
+                this.arrBox[i][j].getComponent("block").moveToLocation(this.arrBox[i][j].x,j*conf.boxHeight+conf.boxHeight/2+10);//передвижение элемента            
             }
         }        
     },
 
     checkToDel(i,j){
-        console.log(i,j,this.arrToDel);
+        //console.log(i,j,this.arrToDel);
         for(var k=0;k<this.arrToDel.length;k++)
         {
             if((this.arrToDel[k].i==i)&&(this.arrToDel[k].j==j)){
@@ -209,21 +211,104 @@ cc.Class({
             }
         }//если у элемента сверху совпадает цвет - вызываем функцию для проверки повторно
 
-        console.log("массив на удаление:", selfy.arrToDel);
-        if(selfy.arrToDel.length<=conf.minCountToBlast-1){return 0;}
+        //console.log("массив на удаление:", selfy.arrToDel);
+        if(selfy.arrToDel.length<=conf.minCountToBlast-1){
+            selfy.arrToDel=[];
+            //this.enabledT=true;
+            return 0;}
         else{return (selfy.arrToDel);}
     },
 
-    makeBlast(x,y){
+    afterBlastMove(){//функция сдвига блоков после взрыва
         var selfy=this;
         var conf=selfy.node.parent.getComponent("config");
+
+        //сдвигаем индексы у имеющихся
+        var n=-1;
+        for(var i=0;i<selfy.arrToDel.length;i++){//сперва изменим координаты у столбцов
+            var k=selfy.arrToDel[i];
+            if(n<k.i){
+                n=k.i;
+                //console.log("столбец ", n);
+                for(var j=k.j;j<selfy.arrBox[k.i].length;j++){
+                    selfy.arrBox[k.i][j].coord_y=j;
+                }
+
+            }
+            //console.log("создаем новый куб в столбце", k.i, "строке", selfy.arrBox[k.i].length);
+            selfy.createNewBox(k.i,selfy.arrBox[k.i].length);
+        }
+
+        //делем MoveTo
+        var k=-1;
+        //console.log(selfy.arrToDel);
         for(var i=0;i<selfy.arrToDel.length;i++){
+            if(k<selfy.arrToDel[i].i){
+                k=selfy.arrToDel[i].i;
+                for(var j=selfy.arrToDel[i].j;j<conf.countHeight;j++){
+                    selfy.arrBox[k][j].getComponent("block").moveToLocation(this.arrBox[k][j].x,j*conf.boxHeight+conf.boxHeight/2+10);
+                }
+            }
+        }
+    },
+
+    makeBlast(x,y){//взрыв
+        var selfy=this;
+        var conf=selfy.node.parent.getComponent("config");
+        selfy.enabledT = false;
+        var wereDel=false;
+        var scorePoints=selfy.arrBox[x][y].score_points;
+
+        selfy.arrToDel.sort(function(a,b){//сортируем массив удаления по возрастанию
+                if(a.i<b.i){return -1;}
+                else{if(a.i==b.i){
+                    if(a.j<b.j){
+                        return -1;
+                    }}                    
+                    else{return 1;}}
+        });
+        
+        //console.log("начнем удаление",selfy.arrToDel);
+
+        for(var i=selfy.arrToDel.length-1;i>=0;i--)//удаляем ноды из масива
+        {
             var m=selfy.arrToDel[i].i;
             var n=selfy.arrToDel[i].j;
-            conf.ScoreCount+=selfy.arrBox[m][n].score_points;
-            selfy.arrBox[m][n].destroy();
-            this.createNewBox(m,n);
+            var a=selfy.arrBox[m][n];
+            selfy.arrBox[m].splice(n,1);
+            a.destroy();
+            wereDel=true;
         }
+
+        if(wereDel){//если удаляли            
+            selfy.afterBlastMove();//добавляем новые кубики и двигаем их
+            scorePoints*=Math.floor(Math.pow(1.5,selfy.arrToDel.length-1));//расчет очков
+            conf.ScoreCount+=scorePoints;//прибавить счет
+                var a=conf;
+            if(conf.ScoreCount>=conf.scoreToWin){
+                selfy.makeWin();
+                return 0;
+            }
+            conf.countTurns--;//убавить ходы
+            if(conf.countTurns==0){
+                selfy.makeLose();
+                return 0;
+            }
+        }
+
+        setTimeout(function(){ selfy.enabledT = true; }, 1000);//задержка, чтобы нельзя было удалить бокс до сдвига клеток
+        //this.enabledT=true;
+    },
+
+    makeWin(){
+        cc.find("Canvas/shadow").x=0;
+        cc.find("Canvas/gameWin").y=0;
+        this.enabledT = false;
+    },
+    makeLose(){
+        cc.find("Canvas/shadow").x=0;
+        cc.find("Canvas/gameOver").y=0;
+        this.enabledT = false;
     },
     // LIFE-CYCLE CALLBACKS:    
     onLoad () {

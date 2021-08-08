@@ -34,13 +34,13 @@ cc.Class({
             //console.log(selfy);
             var conf=selfy.node.parent.parent.getComponent("config");
             var Game=this.node.parent.getComponent("game");
-            //console.log(Game);
-            if(selfy.node.parent.getComponent("game").enabledT)//можно ли среагировать
+            
+            if((selfy.node.parent.getComponent("game").enabledT)&&(! selfy.node.parent.getComponent("game").isStart))//можно ли среагировать
             {
-                console.log("удаляем блоки тут");
                 //console.log("x",selfy.node.x,"y",selfy.node.y);
                 var x=(selfy.node.x-10-conf.boxWidth/2)/conf.boxWidth;
                 var y=(selfy.node.y-10-conf.boxHeight/2)/conf.boxHeight;
+                //удаляем блоки тут
                 //console.log("mouse down",x,y);
                 Game.first_find_box_to_blast(x,y);
                 Game.makeBlast(x,y);

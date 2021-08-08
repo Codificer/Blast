@@ -25,18 +25,11 @@ cc.Class({
 
     onLoad () {
         this.node.on('click', this.callback, this);
+        cc.find('Canvas/area_battle').getComponent('game').isStart=true;
     },
     callback: function (button) {
-        var selfy=button;
-        var conf=selfy.node.parent.getComponent("config");
-        cc.find("Canvas/area_battle").removeAllChildren();
-        cc.find("Canvas/area_battle").getComponent("game").make_battle_arena_new(conf);
-        cc.find("Canvas/area_battle").getComponent("game").enabledT=true;
-        conf.ScoreCount=0;
-        conf.countTurns=conf.defaultTurns;
-        cc.find("Canvas/shadow").x=1000;
-        cc.find("Canvas/gameOver").y=500;
-        cc.find("Canvas/gameWin").y=500;
+        
+        cc.director.loadScene("main");
     },
 
     start () {
