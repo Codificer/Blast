@@ -276,7 +276,7 @@ cc.Class({
             var n=selfy.arrToDel[i].j;
             var a=selfy.arrBox[m][n];
             selfy.arrBox[m].splice(n,1);
-            a.destroy();
+            selfy.destroyBox(a);
             wereDel=true;
         }
 
@@ -328,6 +328,24 @@ cc.Class({
     start () {
 
     },
-
+    destroyBox(a){    
+        /*console.log('destroy arr');
+        var selfy=a;
+        cc.resources.load("blocks/burn",cc.SpriteAtlas,null,function(err,atlas){
+        var sprite = selfy.getComponent(cc.Sprite);
+        var animFrames =[];
+        var burn=["tile000","tile001","tile002","tile003","tile004","tile005","tile006","tile007","tile008","tile009","tile010","tile011","tile012","tile013","tile014","tile015","tile016"]
+        for (var i = 0; i < 17; i++) {   
+            var spriteFrame = atlas.getSpriteFrame(burn[i]);
+            animFrames.push(spriteFrame);
+        }     
+        var animation = cc.AnimationClip.createWithSpriteFrames(animFrames,1);
+        //var animate   = sprite.Animate.create(animation); 
+        console.log(selfy.getComponent(cc.Animation).play());
+        selfy.getComponent(cc.Animation).AnimationClip=animation;
+        selfy.getComponent(cc.Animation).play();
+        });*/
+        a.destroy();
+    }
     // update (dt) {},
 });
