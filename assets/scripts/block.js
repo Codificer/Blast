@@ -17,13 +17,11 @@ cc.Class({
 
     moveToLocation(x,y){//перемещение кубика с стартовой точки до координат
         var selfy=this;
-        //var moveAct=cc.moveTo(1,cc.v2(x,y));
-        //selfy.node.runAction(moveAct);
         let t=cc.tween;
         t(selfy.node)
             .parallel(
                 t().to((y+10)/500,{opacity:255}),
-                t().to(2,{position:cc.v2(x,y)})
+                t().to(1,{position:cc.v2(x,y)})
             )
             .start();
     },
@@ -36,20 +34,25 @@ cc.Class({
             //console.log(selfy);
             var conf=selfy.node.parent.parent.getComponent("config");
             var Game=this.node.parent.getComponent("game");
-            //console.log(Game);
-            if(selfy.node.parent.getComponent("game").enabledT)//можно ли среагировать
+            
+            if((selfy.node.parent.getComponent("game").enabledT)&&(! selfy.node.parent.getComponent("game").isStart))//можно ли среагировать
             {
-                console.log("удаляем блоки тут");
                 //console.log("x",selfy.node.x,"y",selfy.node.y);
                 var x=(selfy.node.x-10-conf.boxWidth/2)/conf.boxWidth;
                 var y=(selfy.node.y-10-conf.boxHeight/2)/conf.boxHeight;
-                console.log(x,y);
-                console.log(Game.find_box_to_blast(x,y,x,y));
+                //удаляем блоки тут
+                //console.log("mouse down",x,y);
+                Game.first_find_box_to_blast(x,y);
+                Game.makeBlast(x,y);
             }
         },this);
     },
 
     start () {
     },
+
+    onDestroy(){
+        console.log("destroy block");
+    }
     
 });

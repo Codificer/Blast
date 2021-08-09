@@ -15,10 +15,12 @@ var config = cc.Class({
         countTurns:{
             default:30,//количество ходов
         },
+        minCountToBlast:2,
         defaultTurns:30,
         ScoreCount:0,
         boxHeight:50,
         boxWidth:50,
+        scoreToWin:50000,
 
 
         // foo: {
@@ -44,14 +46,22 @@ var config = cc.Class({
     },
 
     start () {
+        if(cc.find("area_battle",this.node).getComponent("game").isStart){
+            cc.find("area_time/time",this.node).getComponent(cc.Label).string="Turns:\n∞";
+            cc.find("area_time/score",this.node).getComponent(cc.Label).string="∞";
+        }else{
         cc.find("area_time/time",this.node).getComponent(cc.Label).string="Turns:\n"+this.countTurns;
         cc.find("area_time/score",this.node).getComponent(cc.Label).string=this.ScoreCount;
+        }
         this.boxHeight=(cc.find("area_battle",this.node).height-20)/this.countHeight;
         this.boxWidth=(cc.find("area_battle",this.node).width-20)/this.countWidth;
     },
 
-    update (dt) {        
+    update (dt) {
+        if(cc.find("area_battle",this.node).getComponent("game").isStart){
+        }else{
         cc.find("area_time/time",this.node).getComponent(cc.Label).string="Turns:\n"+this.countTurns;
         cc.find("area_time/score",this.node).getComponent(cc.Label).string=this.ScoreCount;
+        }
     },
 });
