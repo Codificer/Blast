@@ -86,13 +86,14 @@ cc.Class({
         var newBox = cc.instantiate(this.blocksPrefab);
         var conf=this.node.parent.getComponent("config");
         this.arrBox[i][j]=newBox;
-        this.arrBox[i][j].opacity=0;
+        //this.arrBox[i][j].opacity=0;
         this.node.addChild(this.arrBox[i][j]);
         this.arrBox[i][j].colorBox=Math.floor(Math.random()*(conf.colorsCount))+1;
         //this.arrBox[i][j].getComponent("block").colorBox=this.arrBox[i][j].colorBox;
         this.arrBox[i][j].score_points=100*this.arrBox[i][j].colorBox;
         this.arrBox[i][j].coord_x = i;
         this.arrBox[i][j].coord_y = j;        
+        this.arrBox[i][j].zIndex=conf.countHeight-j;
         //console.log("conf.width ",conf.boxWidth,"arrBox ",this.arrBox[i][j].width);
         this.arrBox[i][j].x=i*conf.boxWidth+conf.boxWidth/2+10;
         this.arrBox[i][j].y=this.node.height;//j*conf.boxHeight+conf.boxHeight/2+10;
@@ -239,6 +240,7 @@ cc.Class({
                 //console.log("столбец ", n);
                 for(var j=k.j;j<selfy.arrBox[k.i].length;j++){
                     selfy.arrBox[k.i][j].coord_y=j;
+                    selfy.arrBox[k.i][j].zIndex=conf.countHeight-j;
                 }
 
             }
@@ -283,7 +285,7 @@ cc.Class({
             var n=selfy.arrToDel[i].j;
             var a=selfy.arrBox[m][n];
             selfy.arrBox[m].splice(n,1);
-            a.destroy();
+            selfy.destroyFire(a);
             wereDel=true;
         }
 
@@ -303,7 +305,7 @@ cc.Class({
             }
         }
 
-        setTimeout(function(){ selfy.enabledT = true; }, 1000);//задержка, чтобы нельзя было удалить бокс до сдвига клеток
+        setTimeout(function(){ selfy.enabledT = true; }, 700);//задержка, чтобы нельзя было удалить бокс до сдвига клеток
         //this.enabledT=true;
     },
 
@@ -317,7 +319,10 @@ cc.Class({
         cc.find("Canvas/gameOver").y=0;
         this.enabledT = false;
     },
-
+    destroyFire(a){//анимация огня на уничтожение клетки с последующим удалением Node
+        var anim=a.getComponent(cc.Animation);
+        anim.play();
+    },
     // LIFE-CYCLE CALLBACKS:    
     onLoad () {
         var selfy=this;
@@ -336,6 +341,7 @@ cc.Class({
     start () {
 
     },
+
 
     // update (dt) {},
 });

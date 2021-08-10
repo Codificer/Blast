@@ -21,7 +21,7 @@ cc.Class({
         t(selfy.node)
             .parallel(
                 t().to((y+10)/500,{opacity:255}),
-                t().to(1,{position:cc.v2(x,y)})
+                t().to(0.7,{position:cc.v2(x,y)})
             )
             .start();
     },
