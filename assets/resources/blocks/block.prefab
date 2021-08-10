@@ -57,8 +57,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        780,
-        128,
+        801,
+        138,
         0,
         0,
         0,
@@ -142,6 +142,12 @@
     "_clips": [
       {
         "__uuid__": "2ad0dfdc-ae0e-48aa-a657-88d636a798b8"
+      },
+      {
+        "__uuid__": "b0995428-527a-4b74-8571-fd58f4e7347f"
+      },
+      {
+        "__uuid__": "98f80830-676f-40a0-a1af-cf14b483ecc0"
       }
     ],
     "playOnLoad": false,

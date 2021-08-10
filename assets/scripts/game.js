@@ -20,6 +20,12 @@ cc.Class({
         isStart:false,
         enabledT:true,//доступность хода (блокировка нажатий на время выполнения удаления блоков)
         arrToDel:[],//массив для удаления боксов
+        bombClick:{
+            default:{},
+            i:-1,
+            j:-1,
+        },
+        willBomb:false,
         // foo: {
         //     // ATTRIBUTES:
         //     default: null,        // The default value will be used only when the component attaching
@@ -74,21 +80,27 @@ cc.Class({
                 break;
             case 6://bomb
             //console.log("bomb");      
-            cc.resources.load("blocks/block_purple",cc.SpriteFrame,null,function(err,SpriteFrame){
+            cc.resources.load("blocks/bomb",cc.SpriteFrame,null,function(err,SpriteFrame){
                 selfy.getComponent(cc.Sprite).spriteFrame=SpriteFrame;
+                var anim=selfy.getComponent(cc.Animation);
+                anim.play('bomb');
             });
             break;
 
         }
     },
 
-    createNewBox(i,j){//создание нового куба
+    createNewBox(i,j,colorBox){//создание нового куба
         var newBox = cc.instantiate(this.blocksPrefab);
         var conf=this.node.parent.getComponent("config");
-        this.arrBox[i][j]=newBox;
+        if(colorBox==6){
+            this.arrBox[i].splice(j,0,newBox);
+        }else{
+            this.arrBox[i][j]=newBox;
+        }        
         //this.arrBox[i][j].opacity=0;
         this.node.addChild(this.arrBox[i][j]);
-        this.arrBox[i][j].colorBox=Math.floor(Math.random()*(conf.colorsCount))+1;
+        this.arrBox[i][j].colorBox=colorBox;;
         //this.arrBox[i][j].getComponent("block").colorBox=this.arrBox[i][j].colorBox;
         this.arrBox[i][j].score_points=100*this.arrBox[i][j].colorBox;
         this.arrBox[i][j].coord_x = i;
@@ -96,7 +108,11 @@ cc.Class({
         this.arrBox[i][j].zIndex=conf.countHeight-j;
         //console.log("conf.width ",conf.boxWidth,"arrBox ",this.arrBox[i][j].width);
         this.arrBox[i][j].x=i*conf.boxWidth+conf.boxWidth/2+10;
-        this.arrBox[i][j].y=this.node.height;//j*conf.boxHeight+conf.boxHeight/2+10;
+        if(colorBox==6){
+            this.arrBox[i][j].y=this.bombClick.j*conf.boxHeight+conf.boxHeight/2+10;
+        }else{
+            this.arrBox[i][j].y=this.node.height;
+        };
         this.makeColorN(this.arrBox[i][j]);
         this.arrBox[i][j].height=conf.boxHeight;
         this.arrBox[i][j].width=conf.boxWidth;  
@@ -107,7 +123,8 @@ cc.Class({
         var conf=this.node.parent.getComponent("config");
         for(var i=0;i<conf.countWidth;i++){
             for(var j=0;j<conf.countHeight;j++){
-                this.createNewBox(i,j);    
+                var color=Math.floor(Math.random()*(conf.colorsCount))+1
+                this.createNewBox(i,j,color);    
                 this.arrBox[i][j].getComponent("block").moveToLocation(this.arrBox[i][j].x,j*conf.boxHeight+conf.boxHeight/2+10);//передвижение элемента            
             }
         }        
@@ -231,6 +248,14 @@ cc.Class({
         var selfy=this;
         var conf=selfy.node.parent.getComponent("config");
 
+        //добавляем бомбу
+        //console.log("willBomb %s,bombClick.[i,j] [%s,%s]",selfy.willBomb,selfy.bombClick.i,selfy.bombClick.j);
+        /*if(selfy.willBomb){
+            selfy.arrBox[selfy.bombClick.i].splice(selfy.bombClick.j,0,null);
+            selfy.createNewBox(selfy.bombClick.i,selfy.bombClick.j,6);
+            selfy.willBomb=false;
+        }*/
+
         //сдвигаем индексы у имеющихся
         var n=-1;
         for(var i=0;i<selfy.arrToDel.length;i++){//сперва изменим координаты у столбцов
@@ -239,13 +264,23 @@ cc.Class({
                 n=k.i;
                 //console.log("столбец ", n);
                 for(var j=k.j;j<selfy.arrBox[k.i].length;j++){
+                    //console.log(selfy.arrBox[k.i]);
                     selfy.arrBox[k.i][j].coord_y=j;
                     selfy.arrBox[k.i][j].zIndex=conf.countHeight-j;
                 }
 
             }
             //console.log("создаем новый куб в столбце", k.i, "строке", selfy.arrBox[k.i].length);
-            selfy.createNewBox(k.i,selfy.arrBox[k.i].length);
+            var color;
+            if(selfy.willBomb&&(selfy.bombClick.i==k.i))
+            {
+                color=6;
+                selfy.willBomb=false;
+                selfy.createNewBox(k.i,k.j,color);
+            }else{
+                color=Math.floor(Math.random()*(conf.colorsCount))+1;
+                selfy.createNewBox(k.i,selfy.arrBox[k.i].length,color);
+            }
         }
 
         //делем MoveTo
@@ -267,6 +302,8 @@ cc.Class({
         selfy.enabledT = false;
         var wereDel=false;
         var scorePoints=selfy.arrBox[x][y].score_points;
+        
+        selfy.first_find_box_to_blast(x,y);
 
         selfy.arrToDel.sort(function(a,b){//сортируем массив удаления по возрастанию
                 if(a.i<b.i){return -1;}
@@ -279,6 +316,13 @@ cc.Class({
         
         //console.log("начнем удаление",selfy.arrToDel);
 
+        
+        if(selfy.arrToDel.length>conf.bombCount-1){//добавим бомбу
+            selfy.willBomb=true;
+            selfy.bombClick={i:x,j:y};
+        }
+            else{selfy.willBomb=false;}
+
         for(var i=selfy.arrToDel.length-1;i>=0;i--)//удаляем ноды из масива
         {
             var m=selfy.arrToDel[i].i;
@@ -289,7 +333,8 @@ cc.Class({
             wereDel=true;
         }
 
-        if(wereDel){//если удаляли            
+        if(wereDel){//если удаляли
+                     
             selfy.afterBlastMove();//добавляем новые кубики и двигаем их
             scorePoints*=Math.floor(Math.pow(1.5,selfy.arrToDel.length-1));//расчет очков
             conf.ScoreCount+=scorePoints;//прибавить счет
@@ -321,7 +366,16 @@ cc.Class({
     },
     destroyFire(a){//анимация огня на уничтожение клетки с последующим удалением Node
         var anim=a.getComponent(cc.Animation);
-        anim.play();
+        a.zIndex=10;
+        if(a.colorBox==6){
+            cc.tween(a)
+            .to(0.3,{scaleX:3,scaleY:3})
+            .start();
+            anim.play('blast');
+        }
+        else{
+            anim.play('fire');
+        }
     },
     // LIFE-CYCLE CALLBACKS:    
     onLoad () {

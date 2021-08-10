@@ -639,6 +639,8 @@
     "isStart": false,
     "enabledT": true,
     "arrToDel": [],
+    "bombClick": {},
+    "willBomb": false,
     "_id": "b022aXGJBKVqtOk+k13ikj"
   },
   {
@@ -2023,6 +2025,7 @@
     "boxHeight": 50,
     "boxWidth": 50,
     "scoreToWin": 10000,
+    "bombCount": 3,
     "_id": "6c2QmLaPlITqTvhz29fsag"
   }
 ]
