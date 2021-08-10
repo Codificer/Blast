@@ -184,10 +184,9 @@ cc.Class({
     },
 
     bomb_blast(i,j){
-        console.log('БАБАХ!!!');
         var selfy=this;
         var conf=selfy.node.parent.getComponent("config");
-        var arr=selfy.arrBox[i][j];
+        var arr=selfy.arrBox;
         var toDel=selfy.arrToDel;
 
         for (var x=i-conf.bombRadius;x<=i+conf.bombRadius;x++)
@@ -195,7 +194,12 @@ cc.Class({
             for(var y=j-conf.bombRadius;y<=j+conf.bombRadius;y++)
             {
                 if((x<conf.countWidth)&&(x>-1)&&(y>-1)&&(y<conf.countWidth)){
-                    toDel.push({i:x,j:y});
+                    if(!this.checkToDel(x,y)){
+                        toDel.push({i:x,j:y});
+                        if(arr[x][y].colorBox==6){
+                            selfy.bomb_blast(x,y);
+                        }
+                    }  
                 }
             }
         }
@@ -245,8 +249,8 @@ cc.Class({
             if(selfy.willBomb&&(selfy.bombClick.i==k.i))
             {
                 color=6;
-                selfy.willBomb=false;
                 selfy.createNewBox(k.i,k.j,color);
+                selfy.willBomb=false;
             }else{
                 color=Math.floor(Math.random()*(conf.colorsCount))+1;
                 selfy.createNewBox(k.i,selfy.arrBox[k.i].length,color);
@@ -271,6 +275,8 @@ cc.Class({
         selfy.enabledT = false;
         var wereDel=false;
         var scorePoints=selfy.arrBox[x][y].score_points;
+        var scorePointsBomb=0;
+        var bombColor= (selfy.arrBox[x][y].colorBox==6);
         
         selfy.first_find_box_to_blast(x,y);
 
@@ -296,9 +302,9 @@ cc.Class({
         {
             var m=selfy.arrToDel[i].i;
             var n=selfy.arrToDel[i].j;
-            console.log(selfy.arrToDel[i]);
             var a=selfy.arrBox[m][n];
             selfy.arrBox[m].splice(n,1);
+            scorePointsBomb+=a.score_points;
             selfy.destroyFire(a);
             wereDel=true;
         }
@@ -306,8 +312,15 @@ cc.Class({
         if(wereDel){//если удаляли
                      
             selfy.afterBlastMove();//добавляем новые кубики и двигаем их
+            
             scorePoints*=Math.floor(Math.pow(1.5,selfy.arrToDel.length-1));//расчет очков
-            conf.ScoreCount+=scorePoints;//прибавить счет
+            if(bombColor)
+            {                
+                conf.ScoreCount+=scorePointsBomb;//прибавить счет                
+            }
+            else{
+                conf.ScoreCount+=scorePoints;//прибавить счет
+            }
             var a=conf;
 
             if(conf.ScoreCount>=conf.scoreToWin){
