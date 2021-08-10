@@ -348,11 +348,12 @@ cc.Class({
         this.enabledT = false;
     },
     destroyFire(a){//анимация огня на уничтожение клетки с последующим удалением Node
+        var conf=this.node.parent.getComponent("config");
         var anim=a.getComponent(cc.Animation);
         a.zIndex=10;
         if(a.colorBox==6){
             cc.tween(a)
-            .to(0.3,{scaleX:3,scaleY:3})
+            .to(0.3,{scaleX:1+conf.bombRadius*2,scaleY:1+conf.bombRadius*2})
             .start();
             anim.play('blast');
         }
