@@ -21,7 +21,8 @@ var config = cc.Class({
         boxHeight:50,
         boxWidth:50,
         scoreToWin:50000,
-        bombCount:4,
+        bombCount:5,
+        bombRadius:1,
 
 
         // foo: {

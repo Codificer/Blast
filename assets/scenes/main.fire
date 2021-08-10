@@ -2026,6 +2026,7 @@
     "boxWidth": 50,
     "scoreToWin": 10000,
     "bombCount": 3,
+    "bombRadius": 1,
     "_id": "6c2QmLaPlITqTvhz29fsag"
   }
 ]
