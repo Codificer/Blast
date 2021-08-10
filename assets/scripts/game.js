@@ -72,6 +72,13 @@ cc.Class({
                     selfy.getComponent(cc.Sprite).spriteFrame=SpriteFrame;
                 });
                 break;
+            case 6://bomb
+            //console.log("bomb");      
+            cc.resources.load("blocks/block_purple",cc.SpriteFrame,null,function(err,SpriteFrame){
+                selfy.getComponent(cc.Sprite).spriteFrame=SpriteFrame;
+            });
+            break;
+
         }
     },
 
@@ -82,7 +89,7 @@ cc.Class({
         this.arrBox[i][j].opacity=0;
         this.node.addChild(this.arrBox[i][j]);
         this.arrBox[i][j].colorBox=Math.floor(Math.random()*(conf.colorsCount))+1;
-        this.arrBox[i][j].getComponent("block").colorBox=this.arrBox[i][j].colorBox;
+        //this.arrBox[i][j].getComponent("block").colorBox=this.arrBox[i][j].colorBox;
         this.arrBox[i][j].score_points=100*this.arrBox[i][j].colorBox;
         this.arrBox[i][j].coord_x = i;
         this.arrBox[i][j].coord_y = j;        
@@ -300,16 +307,17 @@ cc.Class({
         //this.enabledT=true;
     },
 
-    makeWin(){
+    makeWin(){//выигрыш
         cc.find("Canvas/shadow").x=0;
         cc.find("Canvas/gameWin").y=0;
         this.enabledT = false;
     },
-    makeLose(){
+    makeLose(){//проигрыш
         cc.find("Canvas/shadow").x=0;
         cc.find("Canvas/gameOver").y=0;
         this.enabledT = false;
     },
+
     // LIFE-CYCLE CALLBACKS:    
     onLoad () {
         var selfy=this;
