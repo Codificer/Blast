@@ -19,10 +19,7 @@ cc.Class({
         var selfy=this;
         let t=cc.tween;
         t(selfy.node)
-            .parallel(
-                t().to((y+10)/500,{opacity:255}),
-                t().to(1,{position:cc.v2(x,y)})
-            )
+            .to(0.7,{position:cc.v2(x,y)})
             .start();
     },
     // LIFE-CYCLE CALLBACKS:
@@ -42,7 +39,6 @@ cc.Class({
                 var y=(selfy.node.y-10-conf.boxHeight/2)/conf.boxHeight;
                 //удаляем блоки тут
                 //console.log("mouse down",x,y);
-                Game.first_find_box_to_blast(x,y);
                 Game.makeBlast(x,y);
             }
         },this);

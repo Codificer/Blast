@@ -642,6 +642,8 @@
     "isStart": false,
     "enabledT": true,
     "arrToDel": [],
+    "bombClick": {},
+    "willBomb": false,
     "_id": "b022aXGJBKVqtOk+k13ikj"
   },
   {
@@ -2019,13 +2021,15 @@
     "colorsCount": 5,
     "countWidth": 9,
     "countHeight": 9,
-    "countTurns": 10,
+    "countTurns": 20,
     "minCountToBlast": 2,
-    "defaultTurns": 10,
+    "defaultTurns": 20,
     "ScoreCount": 0,
     "boxHeight": 50,
     "boxWidth": 50,
-    "scoreToWin": 10000,
+    "scoreToWin": 100000,
+    "bombCount": 3,
+    "bombRadius": 1,
     "_id": "6c2QmLaPlITqTvhz29fsag"
   },
   {
