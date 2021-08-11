@@ -26,9 +26,24 @@ cc.Class({
     onLoad () {
         this.node.on('click', this.callback, this);
     },
-    callback: function (button) {
+    callback: function (button) {//перемешивание
         var selfy=button;
         var conf=selfy.node.parent.getComponent("config");
+
+        
+        conf.countWidth=+cc.find("Canvas/N_count").getComponent(cc.EditBox).string;
+        conf.countHeight=+cc.find("Canvas/M_count").getComponent(cc.EditBox).string;
+        conf.colorsCount=+cc.find("Canvas/C_count").getComponent(cc.EditBox).string;
+        if(conf.colorsCount>5){conf.colorsCount=5;cc.find("Canvas/C_count").getComponent(cc.EditBox).string="5";}
+        conf.minCountToBlast=+cc.find("Canvas/K_count").getComponent(cc.EditBox).string;
+        conf.scoreToWin=+cc.find("Canvas/X_count").getComponent(cc.EditBox).string;
+        conf.defaultTurns=+cc.find("Canvas/Y_count").getComponent(cc.EditBox).string;
+        conf.bombCount=+cc.find("Canvas/Bomb_count").getComponent(cc.EditBox).string;
+        conf.bombRadius=+cc.find("Canvas/BR_count").getComponent(cc.EditBox).string;
+        
+        conf.boxHeight=(cc.find("Canvas/area_battle").height-20)/conf.countHeight;
+        conf.boxWidth=(cc.find("Canvas/area_battle").width-20)/conf.countWidth;
+        
         cc.find("Canvas/area_battle").removeAllChildren();
         conf.ScoreCount=0;
         conf.countTurns=conf.defaultTurns;

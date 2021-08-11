@@ -46,18 +46,31 @@ var config = cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
-    },
-
-    start () {
+        this.countTurns=this.defaultTurns;
         if(cc.find("area_battle",this.node).getComponent("game").isStart){
             cc.find("area_time/time",this.node).getComponent(cc.Label).string="Turns:\n∞";
             cc.find("area_time/score",this.node).getComponent(cc.Label).string="∞";
         }else{
         cc.find("area_time/time",this.node).getComponent(cc.Label).string="Turns:\n"+this.countTurns;
         cc.find("area_time/score",this.node).getComponent(cc.Label).string=this.ScoreCount;
+        
+        cc.find("N_count",this.node).getComponent(cc.EditBox).string=this.countWidth;
+        cc.find("M_count",this.node).getComponent(cc.EditBox).string=this.countHeight;
+        cc.find("C_count",this.node).getComponent(cc.EditBox).string=this.colorsCount;
+        cc.find("K_count",this.node).getComponent(cc.EditBox).string=this.minCountToBlast;
+        cc.find("X_count",this.node).getComponent(cc.EditBox).string=this.scoreToWin;
+        cc.find("Y_count",this.node).getComponent(cc.EditBox).string=this.defaultTurns;
+        cc.find("Bomb_count",this.node).getComponent(cc.EditBox).string=this.bombCount;
+        cc.find("BR_count",this.node).getComponent(cc.EditBox).string=this.bombRadius;
         }
         this.boxHeight=(cc.find("area_battle",this.node).height-20)/this.countHeight;
         this.boxWidth=(cc.find("area_battle",this.node).width-20)/this.countWidth;
+
+
+
+    },
+
+    start () {
     },
 
     update (dt) {

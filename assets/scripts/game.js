@@ -46,8 +46,6 @@ cc.Class({
 
     makeColorN(Node) {
         var selfy = Node;
-        //console.log(selfy);
-        //console.log("makecolor, colorBox=",selfy.colorBox);
         switch(selfy.colorBox){
             case 1:
                 //console.log("blue");
@@ -79,7 +77,7 @@ cc.Class({
                     selfy.getComponent(cc.Sprite).spriteFrame=SpriteFrame;
                 });
                 break;
-            case 6://bomb
+            case 6:
             //console.log("bomb");      
             cc.resources.load("blocks/bomb",cc.SpriteFrame,null,function(err,SpriteFrame){
                 selfy.getComponent(cc.Sprite).spriteFrame=SpriteFrame;
@@ -99,15 +97,12 @@ cc.Class({
         }else{
             this.arrBox[i][j]=newBox;
         }        
-        //this.arrBox[i][j].opacity=0;
         this.node.addChild(this.arrBox[i][j]);
         this.arrBox[i][j].colorBox=colorBox;;
-        //this.arrBox[i][j].getComponent("block").colorBox=this.arrBox[i][j].colorBox;
         this.arrBox[i][j].score_points=100*this.arrBox[i][j].colorBox;
         this.arrBox[i][j].coord_x = i;
         this.arrBox[i][j].coord_y = j;        
         this.arrBox[i][j].zIndex=conf.countHeight-j;
-        //console.log("conf.width ",conf.boxWidth,"arrBox ",this.arrBox[i][j].width);
         this.arrBox[i][j].x=i*conf.boxWidth+conf.boxWidth/2+10;
         if(colorBox==6){
             this.arrBox[i][j].y=this.bombClick.j*conf.boxHeight+conf.boxHeight/2+10;
@@ -123,6 +118,15 @@ cc.Class({
     make_battle_arena_new(){//заполнение поля с нуля
         var selfy=this;
         var conf=selfy.node.parent.getComponent("config");
+
+        selfy.arrBox=[];
+        for(var i=0;i<conf.countWidth;i++){
+            if(!selfy.arrBox[i]){selfy.arrBox[i]=[];}
+            for(var j=0;j<conf.countHeight;j++){
+                selfy.arrBox[i][j]=null;
+            }
+        }
+        var conf=selfy.node.parent.getComponent("config");
         for(var i=0;i<conf.countWidth;i++){
             for(var j=0;j<conf.countHeight;j++){
                 var color=Math.floor(Math.random()*(conf.colorsCount))+1
@@ -131,38 +135,41 @@ cc.Class({
             }
         }    
         if(!selfy.checkHaveTurns()){
-            console.log('при создании арены нет ходов');
             selfy.mix_battle_area(1);
         }    
     },
+
     mix_battle_area(count){//перемешивание арену
         var selfy=this;
         var conf=selfy.node.parent.getComponent("config");
+
+        selfy.makeNoTurn();
+
         if(count>conf.maxMixTurn){
             selfy.makeLose();
             return 0;
         }
+
         var oldArr=selfy.arrBox;
         var newArr=[];
+
         for(var i=0;i<conf.countWidth;i++)
         {
             newArr[i]=[];
         }
 
         var x,y;
-
         for(var i=0;i<conf.countWidth;i++)
         {
             for( var j=0;j<conf.countHeight;j++)
             {
-                x=Math.floor(Math.random()*(oldArr.length-1));
-                y=Math.floor(Math.random()*(oldArr[x].length-1));
+                x=Math.floor(Math.random()*(oldArr.length));
+                y=Math.floor(Math.random()*(oldArr[x].length));
                 newArr[i].push(oldArr[x][y]);
                 oldArr[x].splice(y,1);
                 if(oldArr[x].length==0){
                     oldArr.splice(x,1);
                 }
-
             }
         }
         for(var i=0;i<conf.countWidth;i++)
@@ -178,9 +185,7 @@ cc.Class({
             }
         }
         
-        console.log(selfy.checkHaveTurns());
         if(!selfy.checkHaveTurns()){
-            console.log('при перемешивании арены нет ходов');
             selfy.mix_battle_area(count+1);
         }
     },
@@ -189,14 +194,11 @@ cc.Class({
         var selfy=this;
         var conf=selfy.node.parent.getComponent("config");
         count++;
-        console.log("check turn %s, minCountToBlast=",count,conf.minCountToBlast);
         if(count>=conf.minCountToBlast){
-            console.log()
             return count;
         }
 
         if(selfy.arrBox[i][j].colorBox==6){
-            console.log('bomb found');
             count=conf.minCountToBlast;
             return count;
         }
@@ -238,9 +240,7 @@ cc.Class({
 
         for(var i=0;i<arr.length;i++){
             for(var j=0;j<arr[i].length;j++){
-                console.log("check x=%s,y=%s",i,j);
                 if(selfy.checkSimpleTurns(i,j,i,j,0)>=conf.minCountToBlast){
-                    console.log('turn found');
                     return 1;
                 }
             }
@@ -252,7 +252,6 @@ cc.Class({
     },
 
     checkToDel(i,j){//проверка, уже в архиве на удаление или нет
-        //console.log(i,j,this.arrToDel);
         for(var k=0;k<this.arrToDel.length;k++)
         {
             if((this.arrToDel[k].i==i)&&(this.arrToDel[k].j==j)){
@@ -268,9 +267,9 @@ cc.Class({
 
         if(count>conf.boxHeight*conf.boxWidth){console.log("recurtion");return 0;}
 
-        var currBox=this.arrBox[i][j];
+        var currBox=selfy.arrBox[i][j];
 
-        if(this.checkToDel(i,j)){return 0;}
+        if(selfy.checkToDel(i,j)){return 0;}
         count++;
         selfy.arrToDel.push({i,j});
 
@@ -309,12 +308,12 @@ cc.Class({
         var conf=selfy.node.parent.getComponent("config");
         var arr=selfy.arrBox;
         var toDel=selfy.arrToDel;
-
+        toDel.push({i:i,j:j});
         for (var x=i-conf.bombRadius;x<=i+conf.bombRadius;x++)
         {
             for(var y=j-conf.bombRadius;y<=j+conf.bombRadius;y++)
             {
-                if((x<conf.countWidth)&&(x>-1)&&(y>-1)&&(y<conf.countWidth)){
+                if((x<conf.countWidth)&&(x>-1)&&(y>-1)&&(y<conf.countHeight)){
                     if(!this.checkToDel(x,y)){
                         toDel.push({i:x,j:y});
                         if(arr[x][y].colorBox==6){
@@ -342,8 +341,7 @@ cc.Class({
                 selfy.simple_blast(i,j,i,j,0);
                 break;
         }
-        //console.log(selfy.arrToDel);
-        if((selfy.arrToDel.length>=conf.minCountToBlast)&&(selfy.arrBox[i][j].colorBox!=6))
+        if((selfy.arrToDel.length<conf.minCountToBlast)&&(selfy.arrBox[i][j].colorBox!=6))
         {
             selfy.arrToDel=[];
             return 0;
@@ -455,7 +453,6 @@ cc.Class({
                 return 0;
             }
         }
-        console.log(selfy.checkHaveTurns());
         if(!selfy.checkHaveTurns()){
             selfy.mix_battle_area(1);
         }
@@ -471,6 +468,15 @@ cc.Class({
         cc.find("Canvas/shadow").x=0;
         cc.find("Canvas/gameOver").y=0;
         this.enabledT = false;
+    },
+    makeNoTurn(){//перемешивание
+        var selfy=this;
+        cc.find("Canvas/shadow").x=0;
+        cc.find("Canvas/MixIt").y=0;
+        this.enabledT = false;
+        setTimeout(function(){ selfy.enabledT = true; 
+            cc.find("Canvas/shadow").x=1000;
+            cc.find("Canvas/MixIt").y=500;}, 1000);
     },
     destroyFire(a){//анимация огня на уничтожение клетки с последующим удалением Node
         var conf=this.node.parent.getComponent("config");
@@ -488,16 +494,7 @@ cc.Class({
     },
     // LIFE-CYCLE CALLBACKS:    
     onLoad () {
-        var selfy=this;
-        this.arrBox=[];
-        var conf=selfy.node.parent.getComponent("config");
         //создание массивов кубов
-        for(var i=0;i<conf.countWidth;i++){
-            if(!selfy.arrBox[i]){selfy.arrBox[i]=[];}
-            for(var j=0;j<conf.countHeight;j++){
-                selfy.arrBox[i][j]=null;
-            }
-        }
         this.make_battle_arena_new();
     },
 
