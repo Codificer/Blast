@@ -20,6 +20,7 @@ cc.Class({
         isStart:false,
         enabledT:true,//доступность хода (блокировка нажатий на время выполнения удаления блоков)
         arrToDel:[],//массив для удаления боксов
+        arrToCheck:[],//массив для проверки ходов
         bombClick:{
             default:{},
             i:-1,
@@ -119,18 +120,138 @@ cc.Class({
         },
 
 
-    make_battle_arena_new(conf){//заполнение поля с нуля
-        var conf=this.node.parent.getComponent("config");
+    make_battle_arena_new(){//заполнение поля с нуля
+        var selfy=this;
+        var conf=selfy.node.parent.getComponent("config");
         for(var i=0;i<conf.countWidth;i++){
             for(var j=0;j<conf.countHeight;j++){
                 var color=Math.floor(Math.random()*(conf.colorsCount))+1
-                this.createNewBox(i,j,color);    
-                this.arrBox[i][j].getComponent("block").moveToLocation(this.arrBox[i][j].x,j*conf.boxHeight+conf.boxHeight/2+10);//передвижение элемента            
+                selfy.createNewBox(i,j,color);    
+                selfy.arrBox[i][j].getComponent("block").moveToLocation(selfy.arrBox[i][j].x,j*conf.boxHeight+conf.boxHeight/2+10);//передвижение элемента            
             }
-        }        
+        }    
+        if(!selfy.checkHaveTurns()){
+            console.log('при создании арены нет ходов');
+            selfy.mix_battle_area(1);
+        }    
+    },
+    mix_battle_area(count){//перемешивание арену
+        var selfy=this;
+        var conf=selfy.node.parent.getComponent("config");
+        if(count>conf.maxMixTurn){
+            selfy.makeLose();
+            return 0;
+        }
+        var oldArr=selfy.arrBox;
+        var newArr=[];
+        for(var i=0;i<conf.countWidth;i++)
+        {
+            newArr[i]=[];
+        }
+
+        var x,y;
+
+        for(var i=0;i<conf.countWidth;i++)
+        {
+            for( var j=0;j<conf.countHeight;j++)
+            {
+                x=Math.floor(Math.random()*(oldArr.length-1));
+                y=Math.floor(Math.random()*(oldArr[x].length-1));
+                newArr[i].push(oldArr[x][y]);
+                oldArr[x].splice(y,1);
+                if(oldArr[x].length==0){
+                    oldArr.splice(x,1);
+                }
+
+            }
+        }
+        for(var i=0;i<conf.countWidth;i++)
+        {
+            this.arrBox.push([]);
+            for( var j=0;j<conf.countHeight;j++)
+            {
+                this.arrBox[i].push(newArr[i][j]);
+                this.arrBox[i][j].coord_x=i;
+                this.arrBox[i][j].coord_y=j;
+                this.arrBox[i][j].getComponent("block").moveToLocation(i*conf.boxWidth+conf.boxWidth/2+10,j*conf.boxHeight+conf.boxHeight/2+10);//передвижение элемента   
+
+            }
+        }
+        
+        console.log(selfy.checkHaveTurns());
+        if(!selfy.checkHaveTurns()){
+            console.log('при перемешивании арены нет ходов');
+            selfy.mix_battle_area(count+1);
+        }
     },
 
-    checkToDel(i,j){
+    checkSimpleTurns(i,j,iF,jF,count){
+        var selfy=this;
+        var conf=selfy.node.parent.getComponent("config");
+        count++;
+        console.log("check turn %s, minCountToBlast=",count,conf.minCountToBlast);
+        if(count>=conf.minCountToBlast){
+            console.log()
+            return count;
+        }
+
+        if(selfy.arrBox[i][j].colorBox==6){
+            console.log('bomb found');
+            count=conf.minCountToBlast;
+            return count;
+        }
+
+        if((i-1)>=0){//проверка границ
+            if((selfy.arrBox[i-1][j].colorBox==selfy.arrBox[i][j].colorBox)&&(((i-1)!=iF)||(j!=jF)))//если у элемента слева совпадает цвет И новые координаты не равны предыдущему- вызываем функцию для проверки повторно
+            {
+                count=selfy.checkSimpleTurns(i-1,j,i,j,count); 
+            }
+        }
+    
+        if((i+1)<conf.countWidth){
+            if((selfy.arrBox[i+1][j].colorBox==selfy.arrBox[i][j].colorBox)&&(((i+1)!=iF)||(j!=jF)))//если у элемента справа совпадает цвет И новые координаты не равны предыдущему- вызываем функцию для проверки повторно
+            { 
+                count=selfy.checkSimpleTurns(i+1,j,i,j,count); 
+            }
+        }
+    
+        if((j-1)>=0){
+            if((selfy.arrBox[i][j-1].colorBox==selfy.arrBox[i][j].colorBox)&&(((i)!=iF)||((j-1)!=jF)))//если у элемента снизу совпадает цвет И новые координаты не равны предыдущему- вызываем функцию для проверки повторно
+            { 
+                count=selfy.checkSimpleTurns(i,j-1,i,j,count); 
+            }
+        }
+    
+        if((j+1)<conf.countHeight){
+            if((selfy.arrBox[i][j+1].colorBox==selfy.arrBox[i][j].colorBox)&&(((i)!=iF)||((j+1)!=jF)))//если у элемента сверху совпадает цвет И новые координаты не равны предыдущему- вызываем функцию для проверки повторно
+            {
+                count=selfy.checkSimpleTurns(i,j+1,i,j,count);
+            }
+        }
+        return count;
+    },
+
+    checkHaveTurns(){//проверяем наличие ходов
+        var selfy=this;
+        var conf=selfy.node.parent.getComponent("config");
+        var arr=selfy.arrBox;
+
+        for(var i=0;i<arr.length;i++){
+            for(var j=0;j<arr[i].length;j++){
+                console.log("check x=%s,y=%s",i,j);
+                if(selfy.checkSimpleTurns(i,j,i,j,0)>=conf.minCountToBlast){
+                    console.log('turn found');
+                    return 1;
+                }
+            }
+        }
+
+
+        return 0;
+
+    },
+
+    checkToDel(i,j){//проверка, уже в архиве на удаление или нет
         //console.log(i,j,this.arrToDel);
         for(var k=0;k<this.arrToDel.length;k++)
         {
@@ -141,7 +262,7 @@ cc.Class({
         return 0;
     },
 
-    find_box_to_blast(i,j,iF,jF,count){//поиск блоков для удаления
+    simple_blast(i,j,iF,jF,count){//поиск блоков для удаления
         var selfy=this;
         var conf=selfy.node.parent.getComponent("config");
 
@@ -156,28 +277,28 @@ cc.Class({
         if((i-1)>=0){//проверка границ
             if((selfy.arrBox[i-1][j].colorBox==currBox.colorBox)&&(((i-1)!=iF)||(j!=jF)))//если у элемента слева совпадает цвет И новые координаты не равны предыдущему- вызываем функцию для проверки повторно
             {
-                this.find_box_to_blast(i-1,j,i,j,count); 
+                this.simple_blast(i-1,j,i,j,count); 
             }
         }
     
         if((i+1)<conf.countWidth){
             if((selfy.arrBox[i+1][j].colorBox==currBox.colorBox)&&(((i+1)!=iF)||(j!=jF)))//если у элемента справа совпадает цвет И новые координаты не равны предыдущему- вызываем функцию для проверки повторно
             { 
-                this.find_box_to_blast(i+1,j,i,j,count); 
+                this.simple_blast(i+1,j,i,j,count); 
             }
         }
     
         if((j-1)>=0){
             if((selfy.arrBox[i][j-1].colorBox==currBox.colorBox)&&(((i)!=iF)||((j-1)!=jF)))//если у элемента снизу совпадает цвет И новые координаты не равны предыдущему- вызываем функцию для проверки повторно
             { 
-                this.find_box_to_blast(i,j-1,i,j,count); 
+                this.simple_blast(i,j-1,i,j,count); 
             }
         }
     
         if((j+1)<conf.countHeight){
             if((selfy.arrBox[i][j+1].colorBox==currBox.colorBox)&&(((i)!=iF)||((j+1)!=jF)))//если у элемента сверху совпадает цвет И новые координаты не равны предыдущему- вызываем функцию для проверки повторно
             {
-                this.find_box_to_blast(i,j+1,i,j,count);
+                this.simple_blast(i,j+1,i,j,count);
             }
         }
         
@@ -206,7 +327,7 @@ cc.Class({
 
     },
 
-    first_find_box_to_blast(i,j){//поиск блоков для удаления
+    find_box_to_blast(i,j){//поиск блоков для удаления
         var selfy=this;
         var conf=selfy.node.parent.getComponent("config");
         
@@ -218,15 +339,16 @@ cc.Class({
                 selfy.bomb_blast(i,j);
                 break;
             default://обычное удаление
-                selfy.find_box_to_blast(i,j,i,j,0);
+                selfy.simple_blast(i,j,i,j,0);
                 break;
         }
-        if((selfy.arrToDel.length<=conf.minCountToBlast-1)&&(selfy.arrBox[i][j].colorBox!=6))
+        //console.log(selfy.arrToDel);
+        if((selfy.arrToDel.length>=conf.minCountToBlast)&&(selfy.arrBox[i][j].colorBox!=6))
         {
             selfy.arrToDel=[];
             return 0;
         }
-        else{return (selfy.arrToDel);}
+        else{return 1;}
     },
 
     afterBlastMove(){//функция сдвига блоков после взрыва
@@ -278,7 +400,7 @@ cc.Class({
         var scorePointsBomb=0;
         var bombColor= (selfy.arrBox[x][y].colorBox==6);
         
-        selfy.first_find_box_to_blast(x,y);
+        selfy.find_box_to_blast(x,y);
 
         selfy.arrToDel.sort(function(a,b){//сортируем массив удаления по возрастанию
                 if(a.i<b.i){return -1;}
@@ -288,7 +410,7 @@ cc.Class({
                     }}                    
                     else{return 1;}}
         });
-        if((selfy.arrBox[x][y].colorBox!=6)&&(selfy.arrToDel.length>conf.bombCount-1))
+        if((selfy.arrBox[x][y].colorBox!=6)&&(selfy.arrToDel.length>=conf.bombCount))
         {//добавим бомбу
             selfy.willBomb=true;
             selfy.bombClick={i:x,j:y};
@@ -333,7 +455,10 @@ cc.Class({
                 return 0;
             }
         }
-
+        console.log(selfy.checkHaveTurns());
+        if(!selfy.checkHaveTurns()){
+            selfy.mix_battle_area(1);
+        }
         setTimeout(function(){ selfy.enabledT = true; }, 700);//задержка, чтобы нельзя было удалить бокс до сдвига клеток
     },
 
@@ -373,7 +498,7 @@ cc.Class({
                 selfy.arrBox[i][j]=null;
             }
         }
-        this.make_battle_arena_new(conf);
+        this.make_battle_arena_new();
     },
 
     start () {

@@ -47,8 +47,5 @@ cc.Class({
     start () {
     },
 
-    onDestroy(){
-        console.log("destroy block");
-    }
     
 });

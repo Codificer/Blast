@@ -23,6 +23,7 @@ var config = cc.Class({
         scoreToWin:50000,
         bombCount:5,
         bombRadius:1,
+        maxMixTurn:3,
 
 
         // foo: {

@@ -642,6 +642,7 @@
     "isStart": false,
     "enabledT": true,
     "arrToDel": [],
+    "arrToCheck": [],
     "bombClick": {},
     "willBomb": false,
     "_id": "b022aXGJBKVqtOk+k13ikj"
@@ -1451,8 +1452,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -359.203,
-        163.65,
+        -360,
+        160,
         0,
         0,
         0,
@@ -1798,7 +1799,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "restart",
+    "_name": "mixit",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -1840,8 +1841,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -359.203,
-        117.665,
+        -360,
+        110,
         0,
         0,
         0,
@@ -1863,7 +1864,7 @@
     "_is3DNode": false,
     "_groupIndex": 0,
     "groupIndex": 0,
-    "_id": "5d5Jnt19xG8Zx6vCLf8JrA"
+    "_id": "72io2HQilI1JDYQqDTSfgJ"
   },
   {
     "__type__": "cc.Node",
@@ -1932,7 +1933,7 @@
     "_is3DNode": false,
     "_groupIndex": 0,
     "groupIndex": 0,
-    "_id": "2eeUVLtN1Kt7moY7CnNLCM"
+    "_id": "df7khcVQNA5rNsXnwcBpu7"
   },
   {
     "__type__": "cc.Node",
@@ -1994,7 +1995,7 @@
     "_is3DNode": false,
     "_groupIndex": 0,
     "groupIndex": 0,
-    "_id": "49/seqOQFL2pT6EySl1eFu"
+    "_id": "ffjkhehR5BjYuv6Uxhvz2k"
   },
   {
     "__type__": "cc.Label",
@@ -2029,7 +2030,7 @@
     "_N$fontFamily": "Arial",
     "_N$overflow": 1,
     "_N$cacheMode": 1,
-    "_id": "20NQF5sF9D6Ii9l3V5HeNc"
+    "_id": "9e7cEQGkVIiYAEi1r7sCic"
   },
   {
     "__type__": "cc.Sprite",
@@ -2061,7 +2062,7 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_atlas": null,
-    "_id": "12zaE1jHFPa4tWHMtUsQRC"
+    "_id": "864o7k8iNCb47rg4esfuHk"
   },
   {
     "__type__": "cc.Widget",
@@ -2088,7 +2089,7 @@
     "_isAbsVerticalCenter": true,
     "_originalWidth": 100,
     "_originalHeight": 40,
-    "_id": "5eCchVqqJObJNy39HKxzp1"
+    "_id": "64wqy7kXxCj6lcc2hNbU50"
   },
   {
     "__type__": "cc.Button",
@@ -2165,15 +2166,15 @@
       "__uuid__": "8fcfd516-bd46-4d18-8ebb-9f726e05a1bd@6c48a"
     },
     "_N$disabledSprite": {
-      "__uuid__": "29158224-f8dd-4661-a796-1ffab537140e"
+      "__uuid__": "3a7723c4-78bb-4432-8e51-e30923f99b96"
     },
     "_N$target": {
       "__id__": 39
     },
-    "_id": "99pDZ1jQ1CBadjfhyYJk3x"
+    "_id": "05fK5V5thOmLgXNMb8C8rW"
   },
   {
-    "__type__": "7fc58iTj55MNowCHvsYPq2G",
+    "__type__": "5f5ba7dlkdFdoDB/P0f1G7F",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -2183,7 +2184,7 @@
     "button": {
       "__id__": 44
     },
-    "_id": "cc40KuC69MVLx6r2Cc7OlL"
+    "_id": "ccCHlo4+lGYbKIFw5KDXbc"
   },
   {
     "__type__": "cc.Node",
@@ -2411,7 +2412,7 @@
     "countWidth": 9,
     "countHeight": 9,
     "countTurns": 20,
-    "minCountToBlast": 2,
+    "minCountToBlast": 5,
     "defaultTurns": 20,
     "ScoreCount": 0,
     "boxHeight": 50,
@@ -2419,6 +2420,7 @@
     "scoreToWin": 100000,
     "bombCount": 5,
     "bombRadius": 2,
+    "maxMixTurn": 3,
     "_id": "6c2QmLaPlITqTvhz29fsag"
   }
 ]
