@@ -1,6 +1,6 @@
 {
   "ver": "2.3.7",
-  "uuid": "c609b831-51e6-4947-b262-492e4a6f2d2c",
+  "uuid": "b4524141-1b0f-4c41-87b9-1fce235434c6",
   "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
@@ -14,9 +14,9 @@
   "subMetas": {
     "area_battle_mask": {
       "ver": "1.0.6",
-      "uuid": "acd861f3-7e7f-4796-b74d-d07b9f7ce1d7",
+      "uuid": "74cea522-3b23-4f50-af64-32d11973506d",
       "importer": "sprite-frame",
-      "rawTextureUuid": "c609b831-51e6-4947-b262-492e4a6f2d2c",
+      "rawTextureUuid": "b4524141-1b0f-4c41-87b9-1fce235434c6",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,

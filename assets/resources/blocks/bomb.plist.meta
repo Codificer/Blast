@@ -1,6 +1,6 @@
 {
   "ver": "1.2.6",
-  "uuid": "271bce45-2842-4d24-a145-2e836f0b9a24",
+  "uuid": "bc97da24-ecfa-431e-861d-0bee7dbcaf54",
   "importer": "asset",
   "size": {
     "width": 800,
@@ -10,7 +10,7 @@
   "subMetas": {
     "tile000.png": {
       "ver": "1.0.6",
-      "uuid": "16756584-bd7b-455b-aaa9-6f200d9ae712",
+      "uuid": "d55f59bd-260b-4c5d-8dcb-ec826238a97a",
       "importer": "sprite-frame",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -32,7 +32,7 @@
     },
     "tile001.png": {
       "ver": "1.0.6",
-      "uuid": "c779afcd-ad37-4e00-9d03-2cc33e0196a2",
+      "uuid": "6ab092c3-dc63-4529-8a28-f1d5e2b92c69",
       "importer": "sprite-frame",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -54,7 +54,7 @@
     },
     "tile002.png": {
       "ver": "1.0.6",
-      "uuid": "06a60ad3-eefb-47ec-a3dc-c84860bc341d",
+      "uuid": "450cc18f-8be3-414f-a33b-b3bb3c524072",
       "importer": "sprite-frame",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -76,7 +76,7 @@
     },
     "tile003.png": {
       "ver": "1.0.6",
-      "uuid": "2e3b8af2-c6e8-4a4d-813e-1dba10984f24",
+      "uuid": "9e9a7632-a096-43bb-9001-72ebb79bde41",
       "importer": "sprite-frame",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -98,7 +98,7 @@
     },
     "tile004.png": {
       "ver": "1.0.6",
-      "uuid": "0ee8e0a2-9a7f-4804-bf01-1dd95d00c0e1",
+      "uuid": "25a3dad6-6ff4-4fa2-9604-1d833cef372a",
       "importer": "sprite-frame",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -120,7 +120,7 @@
     },
     "tile005.png": {
       "ver": "1.0.6",
-      "uuid": "39f5f5a3-86fa-4b40-9eff-9f8a367a80a7",
+      "uuid": "4c07b819-032b-477b-bf81-87546d5c814f",
       "importer": "sprite-frame",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -142,7 +142,7 @@
     },
     "tile006.png": {
       "ver": "1.0.6",
-      "uuid": "bb5a01c9-35b1-42ee-8ee7-cd3851df2f88",
+      "uuid": "670070e6-eb03-4c5d-aec6-3f19a1599685",
       "importer": "sprite-frame",
       "trimType": "auto",
       "trimThreshold": 1,
@@ -164,7 +164,7 @@
     },
     "tile007.png": {
       "ver": "1.0.6",
-      "uuid": "b3f34e0d-b066-4a29-8f80-cc9b27df79f0",
+      "uuid": "39827368-f210-4a16-aef4-13c2a4093ede",
       "importer": "sprite-frame",
       "trimType": "auto",
       "trimThreshold": 1,

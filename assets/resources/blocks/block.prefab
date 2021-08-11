@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "block",
+    "_name": "block_blue",
     "_objFlags": 0,
     "_parent": null,
     "_children": [],
@@ -57,8 +57,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        801,
-        138,
+        -80,
+        365.657,
         0,
         0,
         0,
@@ -98,7 +98,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "15ae8d70-554d-4c6c-bde7-1e5c310f2c08"
+      "__uuid__": "741de444-d61d-4e94-90c3-e9a6cf4e092c"
     },
     "_type": 0,
     "_sizeMode": 0,
@@ -110,12 +110,12 @@
     },
     "_fillStart": 0,
     "_fillRange": 0,
-    "_isTrimmedMode": false,
+    "_isTrimmedMode": true,
     "_atlas": null,
     "_id": ""
   },
   {
-    "__type__": "0d6fcmV2XFGiZGtZWrIi06t",
+    "__type__": "206f90TK/BCAoZuf0HMW/Pz",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -129,6 +129,16 @@
     "_id": ""
   },
   {
+    "__type__": "47930NHZTdBG4hWa3ETICNF",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "_id": ""
+  },
+  {
     "__type__": "cc.Animation",
     "_name": "",
     "_objFlags": 0,
@@ -136,31 +146,19 @@
       "__id__": 1
     },
     "_enabled": true,
-    "_defaultClip": {
-      "__uuid__": "2ad0dfdc-ae0e-48aa-a657-88d636a798b8"
-    },
+    "_defaultClip": null,
     "_clips": [
       {
-        "__uuid__": "2ad0dfdc-ae0e-48aa-a657-88d636a798b8"
+        "__uuid__": "8aa9e062-6079-4048-8e87-23d802cbe52e"
       },
       {
-        "__uuid__": "b0995428-527a-4b74-8571-fd58f4e7347f"
+        "__uuid__": "2717d146-7c34-4c0a-be63-d87641f901fc"
       },
       {
-        "__uuid__": "98f80830-676f-40a0-a1af-cf14b483ecc0"
+        "__uuid__": "4ad3486d-e0e7-4f00-b414-e7e0c765119f"
       }
     ],
     "playOnLoad": false,
-    "_id": ""
-  },
-  {
-    "__type__": "3e128AhmepCjpaI7PQw4JWe",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
     "_id": ""
   },
   {
@@ -169,7 +167,7 @@
       "__id__": 1
     },
     "asset": {
-      "__uuid__": "eebeeb98-4072-4f79-9c2b-8526ad0690f6"
+      "__id__": 0
     },
     "fileId": "",
     "sync": false

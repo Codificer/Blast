@@ -1,7 +1,7 @@
 {
   "ver": "2.3.7",
-  "uuid": "7a007e44-5292-4943-9f71-f0f1a4d4e436",
-  "importer": "image",
+  "uuid": "09d1b300-15c6-410c-a635-76fa2413f513",
+  "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -14,9 +14,9 @@
   "subMetas": {
     "вид фона и элементов": {
       "ver": "1.0.6",
-      "uuid": "7a007e44-5292-4943-9f71-f0f1a4d4e436@6c48a",
-      "importer": "texture",
-      "rawTextureUuid": "7a007e44-5292-4943-9f71-f0f1a4d4e436",
+      "uuid": "7f27d2ef-37c4-4a91-96cf-380e09136ee8",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "09d1b300-15c6-410c-a635-76fa2413f513",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,
