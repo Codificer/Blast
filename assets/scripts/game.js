@@ -98,8 +98,7 @@ cc.Class({
             this.arrBox[i][j]=newBox;
         }        
         this.node.addChild(this.arrBox[i][j]);
-        this.arrBox[i][j].colorBox=colorBox;;
-        this.arrBox[i][j].score_points=100*this.arrBox[i][j].colorBox;
+        this.arrBox[i][j].colorBox=colorBox;
         this.arrBox[i][j].coord_x = i;
         this.arrBox[i][j].coord_y = j;        
         this.arrBox[i][j].zIndex=conf.countHeight-j;
@@ -389,12 +388,21 @@ cc.Class({
         }
     },
 
+    getScore(a){        //очки в зависимости от цвета
+        var selfy=this;
+        var conf=selfy.node.parent.getComponent("config");        
+        return 100*a;
+        
+    },
+
+
     makeBlast(x,y){//взрыв
         var selfy=this;
         var conf=selfy.node.parent.getComponent("config");
         selfy.enabledT = false;
         var wereDel=false;
-        var scorePoints=selfy.arrBox[x][y].score_points;
+        console.log("make_blast, x:%s,y:%s",x,y,selfy.arrBox[x][y]);
+        var scorePoints=selfy.getScore(selfy.arrBox[x][y].colorBox);
         var scorePointsBomb=0;
         var bombColor= (selfy.arrBox[x][y].colorBox==6);
         
@@ -424,7 +432,7 @@ cc.Class({
             var n=selfy.arrToDel[i].j;
             var a=selfy.arrBox[m][n];
             selfy.arrBox[m].splice(n,1);
-            scorePointsBomb+=a.score_points;
+            scorePointsBomb+=selfy.getScore(a.colorBox);
             selfy.destroyFire(a);
             wereDel=true;
         }

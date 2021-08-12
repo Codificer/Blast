@@ -10,7 +10,6 @@ cc.Class({
 
     properties: {
         colorBox:1,
-        score_points:100,
         coord_x: -1,
         coord_y: -1,
     },
@@ -35,8 +34,8 @@ cc.Class({
             if((selfy.node.parent.getComponent("game").enabledT)&&(! selfy.node.parent.getComponent("game").isStart))//можно ли среагировать
             {
                 //console.log("x",selfy.node.x,"y",selfy.node.y);
-                var x=(selfy.node.x-10-conf.boxWidth/2)/conf.boxWidth;
-                var y=(selfy.node.y-10-conf.boxHeight/2)/conf.boxHeight;
+                var x=Math.floor((selfy.node.x-10-conf.boxWidth/2)/conf.boxWidth);
+                var y=Math.floor((selfy.node.y-10-conf.boxHeight/2)/conf.boxHeight);
                 //удаляем блоки тут
                 //console.log("mouse down",x,y);
                 Game.makeBlast(x,y);
