@@ -19,6 +19,7 @@ cc.Class({
         },
         isStart:false,
         enabledT:true,//доступность хода (блокировка нажатий на время выполнения удаления блоков)
+        gameOn:true,//показывает, что игра еще идет
         arrToDel:[],//массив для удаления боксов
         arrToCheck:[],//массив для проверки ходов
         bombClick:{
@@ -142,7 +143,7 @@ cc.Class({
         var selfy=this;
         var conf=selfy.node.parent.getComponent("config");
 
-        selfy.makeNoTurn();
+        selfy.makeEndOFGame(0);
 
         if(count>conf.maxMixTurn){
             selfy.makeLose();
@@ -401,7 +402,6 @@ cc.Class({
         var conf=selfy.node.parent.getComponent("config");
         selfy.enabledT = false;
         var wereDel=false;
-        console.log("make_blast, x:%s,y:%s",x,y,selfy.arrBox[x][y]);
         var scorePoints=selfy.getScore(selfy.arrBox[x][y].colorBox);
         var scorePointsBomb=0;
         var bombColor= (selfy.arrBox[x][y].colorBox==6);
@@ -452,40 +452,51 @@ cc.Class({
             var a=conf;
 
             if(conf.ScoreCount>=conf.scoreToWin){
-                selfy.makeWin();
+                selfy.makeEndOFGame(1);
                 return 0;
             }
             conf.countTurns--;//убавить ходы
             if(conf.countTurns==0){
-                selfy.makeLose();
+                selfy.makeEndOFGame(-1);
                 return 0;
             }
         }
         if(!selfy.checkHaveTurns()){
             selfy.mix_battle_area(1);
         }
-        setTimeout(function(){ selfy.enabledT = true; }, 700);//задержка, чтобы нельзя было удалить бокс до сдвига клеток
+        setTimeout(function(){ selfy.enabledT = selfy.gameOn; }, 700);//задержка, чтобы нельзя было удалить бокс до сдвига клеток
     },
 
-    makeWin(){//выигрыш
-        cc.find("Canvas/shadow").x=0;
-        cc.find("Canvas/gameWin").y=0;
-        this.enabledT = false;
-    },
-    makeLose(){//проигрыш
-        cc.find("Canvas/shadow").x=0;
-        cc.find("Canvas/gameOver").y=0;
-        this.enabledT = false;
-    },
-    makeNoTurn(){//перемешивание
+    makeEndOFGame(type){//выигрыш
+
         var selfy=this;
         cc.find("Canvas/shadow").x=0;
-        cc.find("Canvas/MixIt").y=0;
-        this.enabledT = false;
-        setTimeout(function(){ selfy.enabledT = true; 
-            cc.find("Canvas/shadow").x=1000;
-            cc.find("Canvas/MixIt").y=500;}, 1000);
+        cc.find("Canvas/gameEnd").y=0;
+        cc.find("Canvas/start_new").y=-150;
+        switch(type){
+            case -1://makeLose
+                cc.find("Canvas/gameEnd").getComponent(cc.RichText).string="<outline color=black width=4>GAME\nOVER</outline>";
+                selfy.gameOn=false;
+                selfy.enabledT = selfy.gameOn;
+                break;
+            case 1://makeWin
+                cc.find("Canvas/gameEnd").getComponent(cc.RichText).string="<outline color=black width=4>you\nWIN!!!</outline>";
+                selfy.gameOn=false;
+                selfy.enabledT = selfy.gameOn;
+                break;
+            case 0://makeMix
+                cc.find("Canvas/gameEnd").getComponent(cc.RichText).string="<outline color=black width=4>NO TURNS</outline>";
+                cc.find("Canvas/start_new").y=500;
+                selfy.enabledT = selfy.gameOn;
+                setTimeout(function(){ selfy.enabledT = selfy.gameOn; 
+                    cc.find("Canvas/shadow").x=1000;
+                    cc.find("Canvas/gameEnd").y=500;}
+                , 1000);
+                break;
+
+        };
     },
+
     destroyFire(a){//анимация огня на уничтожение клетки с последующим удалением Node
         var conf=this.node.parent.getComponent("config");
         var anim=a.getComponent(cc.Animation);

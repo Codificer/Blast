@@ -29,7 +29,9 @@ cc.Class({
     callback: function (button) {//перемешивание
         var selfy=button;
         var conf=selfy.node.parent.getComponent("config");
-        cc.find("Canvas/area_battle").getComponent("game").mix_battle_area();
+        if(cc.find("Canvas/area_battle").getComponent("game").gameOn){
+            cc.find("Canvas/area_battle").getComponent("game").mix_battle_area();
+        }
     },
 
     start () {

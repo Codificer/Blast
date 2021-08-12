@@ -48,8 +48,7 @@ cc.Class({
         conf.ScoreCount=0;
         conf.countTurns=conf.defaultTurns;
         cc.find("Canvas/shadow").x=1000;
-        cc.find("Canvas/gameOver").y=500;
-        cc.find("Canvas/gameWin").y=500;
+        cc.find("Canvas/gameEnd").y=500;
         cc.find("Canvas/area_battle").getComponent("game").make_battle_arena_new();
         cc.find("Canvas/area_battle").getComponent("game").enabledT=true;
     },
